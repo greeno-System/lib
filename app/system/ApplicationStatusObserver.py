@@ -1,5 +1,5 @@
 from threading import Thread
-from lib.system.SystemStatus import SystemStatus
+from lib.app.system.SystemStatus import SystemStatus
 import os, os.path
 import sys
 

@@ -1,9 +1,9 @@
 import os
 import os.path
 from ctypes import cdll, byref, create_string_buffer
-from lib.core.config.Config import Config
-from lib.system.ApplicationStatusObserver import ApplicationStatusObserver
-from lib.equipment.EquipmentCollection import EquipmentCollection
+from lib.app.core.config.Config import Config
+from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
+from lib.app.equipment.EquipmentCollection import EquipmentCollection
 
 
 class Application():
@@ -22,8 +22,10 @@ class Application():
         self.statusObserver = ApplicationStatusObserver(self, statusFile)
 
     def start(self):
-        self._setProcessName(self.config.get("applicationProcessName"))
+        self._setProcessName(self.config.get("applicationProcess"))
         self.statusObserver.start()
+
+        return
 
         self.equipmentCollection = self._createEquipmentCollection()
         self.loadEquipment(self.equipmentCollection)
@@ -49,21 +51,8 @@ class Application():
             raise FileNotFoundError("Configuration file does not exist at' " + configFilePath + "'")
 
         config = Config(configFilePath)
-        requiredProperties = self.getRequiredConfigProperties()
-
-        for propName in requiredProperties:
-            if not config.get(propName):
-                raise ValueError("Field '" + propName + "' not found in configuration file '" + configFilePath + "'")
 
         return config
-
-    def getRequiredConfigProperties(self):
-        return [
-            'name',
-            'version',
-            'applicationProcessName',
-            'equipmentFilePath'
-        ]
     
     def _createEquipmentCollection(self):
         file = self.config.get("equipmentFilePath")

@@ -1,4 +1,4 @@
-from lib.core.config.ConfigReader import ConfigReader
+from lib.app.core.config.ConfigReader import ConfigReader
 import os.path
 import xml.etree.ElementTree as ET
 

@@ -1,5 +1,5 @@
 import os.path
-from lib.core.config.ConfigReader import ConfigReader
+from lib.app.core.config.ConfigReader import ConfigReader
 
 class Config():
 

@@ -1,6 +1,6 @@
 import os.path
-from lib.equipment.EquipmentCollectionReader import EquipmentCollectionReader
-from lib.core.config.Config import Config
+from lib.app.equipment.EquipmentCollectionReader import EquipmentCollectionReader
+from lib.app.core.config.Config import Config
 
 class EquipmentCollection():
 

@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 import os.path
-from lib.equipment.connection.ConnectionConfigReader import ConnectionConfigReader
+from lib.app.equipment.connection.ConnectionConfigReader import ConnectionConfigReader
 
 class Connection(ABC):
 

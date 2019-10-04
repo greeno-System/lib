@@ -1,6 +1,6 @@
 from lib.equipment.connection.Connection import Connection
 from abc import ABC
-from lib.equipment.connection.MultiChannelConnectionConfigReader import MultiChannelConnectionConfigReader
+from lib.app.equipment.connection.MultiChannelConnectionConfigReader import MultiChannelConnectionConfigReader
 
 class MultiChannelConnection(Connection, ABC):
 
