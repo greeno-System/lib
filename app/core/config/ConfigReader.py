@@ -10,7 +10,8 @@ class ConfigReader():
         if not os.path.isfile(path):
             raise FileNotFoundError("File '" + path + "' does not exist!")
 
-        self.validateSchema(path)
+        if not self.isSchemaValid(path):
+            raise ValueError("XML file '" + path + "' is not valid to it's schema!")
 
         tree = ET.parse(path)
         root = tree.getroot()
@@ -26,7 +27,7 @@ class ConfigReader():
 
         return properties
 
-    def validateSchema(self, path):
+    def isSchemaValid(self, path):
         if not os.path.isfile(path):
             raise FileNotFoundError("File '" + path + "' does not exist!")
 
@@ -38,7 +39,10 @@ class ConfigReader():
         if schemaLocation:
 
             if not os.path.isfile(schemaLocation):
-                raise ValueError("XML schema was not found at '" + schemaLocation + "'")
+                return False
 
             schema = xmlschema.XMLSchema(schemaLocation)
-            schema.validate(path)
+            
+            return schema.is_valid(path)
+        
+        return True
