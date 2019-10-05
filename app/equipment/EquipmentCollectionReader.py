@@ -8,6 +8,9 @@ class EquipmentCollectionReader(ConfigReader):
         if not os.path.isfile(filePath):
             raise FileNotFoundError("File '" + filePath + "' does not exist!")
 
+        if not self.isSchemaValid(filePath):
+            raise ValueError("The equipment file is not valid to equipment schema!")
+
         tree = ET.parse(filePath)
         root = tree.getroot()
 
@@ -24,7 +27,7 @@ class EquipmentCollectionReader(ConfigReader):
             equipments = list(elem)
 
             for e in equipments:
-                name = e.text.strip()
+                name = e.get('name')
                 properties[tag].append(name)
 
         return properties

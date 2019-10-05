@@ -22,3 +22,12 @@ class EquipmentCollection():
     def getCollection(self, collectionName):
 
         return self.config.get(collectionName)
+
+    def has(self, collectionName, equipmentName):
+
+        collection = self.getCollection(collectionName)
+
+        if not collection:
+            return False
+
+        return equipmentName in collection

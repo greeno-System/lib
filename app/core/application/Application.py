@@ -25,10 +25,7 @@ class Application():
         self._setProcessName(self.config.get("applicationProcess"))
         self.statusObserver.start()
 
-        return
-
-        self.equipmentCollection = self._createEquipmentCollection()
-        self.loadEquipment(self.equipmentCollection)
+        self.loadEquipment()
 
     def _setProcessName(self, processName):
 
@@ -54,14 +51,11 @@ class Application():
 
         return config
     
-    def _createEquipmentCollection(self):
-        file = self.config.get("equipmentFilePath")
+    def loadEquipment(self):
 
-        return EquipmentCollection(file)
+        file = os.getcwd() + "/../equipment.xml"
 
-    def loadEquipment(self, collection):
-        if not collection:
-            raise ValueError("No equipment collection given!")
+        self.equipmentCollection = EquipmentCollection(file)
 
         #TODO: load equipment
 
