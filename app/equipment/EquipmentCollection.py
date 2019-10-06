@@ -19,15 +19,18 @@ class EquipmentCollection():
 
         return Config(filePath, reader)
 
-    def getCollection(self, collectionName):
+    def getGroups(self):
+        return list(self.config.getProperties().keys())
 
-        return self.config.get(collectionName)
+    def getGroup(self, groupName):
 
-    def has(self, collectionName, equipmentName):
+        return self.config.get(groupName)
 
-        collection = self.getCollection(collectionName)
+    def has(self, groupName, name):
 
-        if not collection:
+        group = self.getGroup(groupName)
+
+        if not group:
             return False
 
-        return equipmentName in collection
+        return name in group
