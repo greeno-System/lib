@@ -4,31 +4,37 @@
     <xsd:element name="equipment">
         <xsd:complexType>
             <xsd:sequence>
+
+                <xsd:element name="customLoadPath" minOccurs="0" maxOccurs="1" type="xsd:string" />
         
-                <xsd:element name="connections">
+                <xsd:element name="defaults">
                     <xsd:complexType>
                         <xsd:sequence>
-
-                            <xsd:element name="connection" minOccurs="0" maxOccurs="unbounded">
-                                <xsd:complexType>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                    <xsd:attribute name="name" type="xsd:string"/>
-                                </xsd:complexType>
-                            </xsd:element>
-
-                        </xsd:sequence>
-                    </xsd:complexType>
-                </xsd:element>
-
-                <xsd:element name="dataInterfaces">
-                    <xsd:complexType>
-                        <xsd:sequence>
-
-                            <xsd:element name="dataInterface" minOccurs="0" maxOccurs="unbounded">
+                        
+                            <xsd:element name="group" minOccurs="0" maxOccurs="unbounded">
                                 <xsd:complexType>
-                                    <xsd:attribute name="name" type="xsd:string"/>
+
+                                        <xsd:sequence>
+                                        
+                                            <xsd:element name="component" minOccurs="1" maxOccurs="unbounded">
+                                                <xsd:complexType>
+                                                    <xsd:simpleContent>
+
+                                                        <xsd:extension base="xsd:string">
+                                                            <xsd:attribute name="name" type="xsd:string" />
+                                                        </xsd:extension>                                                 
+
+                                                    </xsd:simpleContent>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                        
+                                        </xsd:sequence>
+
+                                        <xsd:attribute name="name" type="xsd:string" />
+
                                 </xsd:complexType>
                             </xsd:element>
-                            
+                        
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
