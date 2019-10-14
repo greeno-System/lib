@@ -4,11 +4,11 @@ import bluetooth
 class Bluetooth(MultiChannelConnection):
     
     def open(self):
-        pass
+        print("opening bluetooth connection!")
 
     
     def close(self):
-        pass
+        print("closing bluetooth connection!")
 
     
     def write(self, channel):
