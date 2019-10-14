@@ -1,4 +1,4 @@
-
+import os.path
 class EquipmentManager():
 
     def __init__(self, equipmentCollection):
@@ -12,3 +12,15 @@ class EquipmentManager():
         groups = self.collection.getGroups()
 
         baseLoadPath = "lib/defaults"
+
+        for groupName in groups:
+            libPath = baseLoadPath + "/" + groupName
+
+            print("loading equipment group '" + groupName + "' in '" + libPath + "'")
+
+            if os.path.isdir(libPath):
+                print("directory does exist!")
+            else:
+                print("directory not found!")
+
+    
