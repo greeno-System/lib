@@ -14,20 +14,61 @@ class EquipmentCollectionReader(ConfigReader):
         tree = ET.parse(filePath)
         root = tree.getroot()
 
-        elements = list(root)
-
         properties = {}
 
-        for elem in elements:
-            tag = elem.tag
+        customLoadPath = self._getCustomLoadPath(root)
 
-            if not tag in properties:
-                properties[tag] = []
+        if customLoadPath:
+            properties["customLoadPath"] = customLoadPath
+        
+        
+        defaults = self._getDefaults(root)
 
-            equipments = list(elem)
-
-            for e in equipments:
-                name = e.get('name')
-                properties[tag].append(name)
+        if defaults != False:
+            properties["groups"] = defaults
 
         return properties
+
+    def _getCustomLoadPath(self, root):
+
+        if root is None:
+            return False
+
+        if root.find("customLoadPath") is None:
+            return False
+
+        if root.find("customLoadPath").text.strip() == "":
+
+            return False
+
+        return root.find("customLoadPath").text.strip()
+
+    def _getDefaults(self, root):
+
+        if root is None:
+            return False
+
+        defaultsElem = root.find("defaults")
+
+        if defaultsElem is None:
+            return False
+
+        groupElems = list(defaultsElem.findall("group"))
+
+        if not groupElems or len(groupElems) == 0:
+            return False
+
+        groups = {}
+
+        for group in groupElems:
+            groupName = group.attrib["name"]
+
+            groups[groupName] = []
+
+            for component in list(group.findall("component")):
+                componentName = component.attrib["name"]
+
+                groups[groupName].append(componentName)
+
+        return groups
+

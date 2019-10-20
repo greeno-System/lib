@@ -20,11 +20,11 @@ class EquipmentCollection():
         return Config(filePath, reader)
 
     def getGroups(self):
-        return list(self.config.getProperties().keys())
+        return self.config.get("groups")
 
     def getGroup(self, groupName):
 
-        return self.config.get(groupName)
+        return self.config.get("groups")[groupName]
 
     def has(self, groupName, name):
 
