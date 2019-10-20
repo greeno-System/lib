@@ -12,8 +12,19 @@ class EquipmentManager():
         groups = self.collection.getGroups()
 
         baseLoadPath = "lib/defaults"
+        baseCorePath = "lib/equipment"
+
+        print(groups)
+        return
+
 
         for groupName in groups:
+
+            if not self.groupExists(groupName):
+                print("equipment group with name '" + groupName + "' is unknown")
+                continue
+
+            corePath = baseCorePath + "/" + groupName
             libPath = baseLoadPath + "/" + groupName
 
             print("loading equipment group '" + groupName + "' in '" + libPath + "'")
@@ -23,4 +34,11 @@ class EquipmentManager():
             else:
                 print("directory not found!")
 
-    
+    def groupExists(self, groupName):
+        
+        if not groupName:
+            return False
+
+        corePath = "lib/equipment/" + groupName
+
+        return os.path.isdir(corePath)
