@@ -11,18 +11,15 @@ class EquipmentManager():
     def loadEquipment(self):
         groups = self.collection.getGroups()
 
-        baseLoadPath = "lib/defaults"
-        baseCorePath = "lib/equipment"
-
-        print(groups)
-        return
-
-
         for groupName in groups:
 
             if not self.groupExists(groupName):
-                print("equipment group with name '" + groupName + "' is unknown")
+                print("equipment group '" + groupName + "' is unknown")
                 continue
+                
+            groupLoader = self._createGroupLoader(groupName)
+
+            #TODO: continue
 
             corePath = baseCorePath + "/" + groupName
             libPath = baseLoadPath + "/" + groupName
@@ -39,6 +36,11 @@ class EquipmentManager():
         if not groupName:
             return False
 
-        corePath = "lib/equipment/" + groupName
+        corePath = "lib/app/equipment/" + groupName
 
         return os.path.isdir(corePath)
+
+    def _createGroupLoader(self, groupName):
+        pass
+
+        #TODO: implement method
