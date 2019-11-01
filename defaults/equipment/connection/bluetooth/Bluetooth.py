@@ -1,14 +1,15 @@
 from lib.equipment.connection.MultiChannelConnection import MultiChannelConnection
+from lib.app.core.application.Application import Application
 import bluetooth
 
 class Bluetooth(MultiChannelConnection):
     
     def open(self):
-        print("opening bluetooth connection!")
+        self.logger.debug("Opening bluetooth connection")
 
     
     def close(self):
-        print("closing bluetooth connection!")
+        self.logger.debug("Closing bluetooth connection")
 
     
     def write(self, channel):

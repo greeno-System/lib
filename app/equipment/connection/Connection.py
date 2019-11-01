@@ -2,10 +2,12 @@ from abc import ABC
 from abc import abstractmethod
 import os.path
 from lib.app.equipment.connection.ConnectionConfigReader import ConnectionConfigReader
+from lib.app.core.application.Application import Application
 
 class Connection(ABC):
 
-    def __init__(self, params):
+    def __init__(self):
+        self.logger = Application.app().getLogger()
 
     @abstractmethod
     def open(self):

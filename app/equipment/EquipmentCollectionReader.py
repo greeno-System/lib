@@ -41,7 +41,7 @@ class EquipmentCollectionReader(ConfigReader):
 
             return False
 
-        return root.find("customLoadPath").text.strip()
+        return root.find("customLoadPath").text.strip().strip("/") + "/"
 
     def _getDefaults(self, root):
 
