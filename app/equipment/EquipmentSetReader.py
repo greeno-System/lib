@@ -2,7 +2,7 @@ from lib.app.core.config.ConfigReader import ConfigReader
 import os.path
 import xml.etree.ElementTree as ET
 
-class EquipmentCollectionReader(ConfigReader):
+class EquipmentSetReader(ConfigReader):
 
     def load(self, filePath):
         if not os.path.isfile(filePath):

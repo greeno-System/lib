@@ -1,38 +1,38 @@
 import os.path
 import logging
 import importlib
-from lib.app.equipment.EquipmentCollection import EquipmentCollection
+from lib.app.equipment.EquipmentSet import EquipmentSet
 class EquipmentManager():
 
-    def __init__(self, equipmentCollection):
+    def __init__(self, equipmentSet):
 
-        if not equipmentCollection:
-            raise ValueError("Equipment collection should not be None.")
+        if not equipmentSet:
+            raise ValueError("Equipment set should not be None.")
 
-        self.collection = equipmentCollection
+        self.set = equipmentSet
 
         from lib.app.core.application.Application import Application
         self.app = Application.app()
 
     def loadEquipment(self):
-        groups = self.collection.getGroups()
+        groups = self.set.getGroups()
 
-        customLoadPath = self.collection.getCustomLoadPath()
+        customLoadPath = self.set.getCustomLoadPath()
 
         for groupName in groups:
 
-            if not self.collection.groupExists(groupName):
+            if not self.set.groupExists(groupName):
                 self.app.getLogger().warning("Equipment group with name '" + groupName + "' does not exist!")
                 continue
                 
-            installationPath = EquipmentCollection.BASE_CORE_PATH + groupName
+            installationPath = EquipmentSet.BASE_CORE_PATH + groupName
 
             groupLoader = self._createGroupLoader(installationPath, groupName, customLoadPath)
 
             if not groupLoader:
                 continue
 
-            defaultComponents = self.collection.getGroup(groupName)
+            defaultComponents = self.set.getGroup(groupName)
             groupLoader.loadDefaultComponents(defaultComponents)
 
     def _createGroupLoader(self, installationPath, groupName, customLoadPath=None):

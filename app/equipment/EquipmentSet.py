@@ -1,8 +1,8 @@
 import os.path
-from lib.app.equipment.EquipmentCollectionReader import EquipmentCollectionReader
+from lib.app.equipment.EquipmentSetReader import EquipmentSetReader
 from lib.app.core.config.Config import Config
 
-class EquipmentCollection():
+class EquipmentSet():
 
     BASE_CORE_PATH = "lib/app/equipment/"
     DEFAULT_LOAD_PATH = "lib/defaults/equipment/"
@@ -18,7 +18,7 @@ class EquipmentCollection():
 
     
     def _createConfig(self, filePath):
-        reader = EquipmentCollectionReader()
+        reader = EquipmentSetReader()
 
         return Config(filePath, reader)
 
@@ -34,7 +34,7 @@ class EquipmentCollection():
         if groupName is None:
             return False
 
-        return os.path.isdir(EquipmentCollection.BASE_CORE_PATH + groupName)
+        return os.path.isdir(EquipmentSet.BASE_CORE_PATH + groupName)
 
     def has(self, groupName, name):
 

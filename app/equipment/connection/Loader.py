@@ -7,3 +7,6 @@ class ConnectionLoader(EquipmentLoader):
 
     def loadComponent(self, installationPath):
         pass
+
+    def isLoadable(self):
+        pass

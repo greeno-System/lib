@@ -5,7 +5,7 @@ import sys
 from ctypes import cdll, byref, create_string_buffer
 from lib.app.core.config.Config import Config
 from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
-from lib.app.equipment.EquipmentCollection import EquipmentCollection
+from lib.app.equipment.EquipmentSet import EquipmentSet
 from lib.app.equipment.EquipmentManager import EquipmentManager
 
 
@@ -89,9 +89,9 @@ class Application():
     def _createEquipmentManager(self):
 
         file = os.getcwd() + "/../equipment.xml"
-        self.equipmentCollection = EquipmentCollection(file)
+        self.equipmentSet = EquipmentSet(file)
 
-        return EquipmentManager(self.equipmentCollection)
+        return EquipmentManager(self.equipmentSet)
 
         #TODO: load equipment
 

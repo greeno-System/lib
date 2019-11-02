@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 from lib.app.core.application.Application import Application
-from lib.app.equipment.EquipmentCollection import EquipmentCollection
+from lib.app.equipment.EquipmentSet import EquipmentSet
 import os.path
 
 class EquipmentLoader(ABC):
@@ -11,7 +11,7 @@ class EquipmentLoader(ABC):
         self.logger = Application.app().getLogger()
         self.equipmentGroupName = equipmentGroupName
 
-        self.defaultLoadPath = EquipmentCollection.DEFAULT_LOAD_PATH + equipmentGroupName
+        self.defaultLoadPath = EquipmentSet.DEFAULT_LOAD_PATH + equipmentGroupName
 
         if customLoadPath:
             self.customLoadPath = customLoadPath + equipmentGroupName
@@ -25,7 +25,7 @@ class EquipmentLoader(ABC):
             return False
 
         for componentName in defaultComponents:
-            installationPath = EquipmentCollection.DEFAULT_LOAD_PATH + self.equipmentGroupName + "/" + componentName
+            installationPath = EquipmentSet.DEFAULT_LOAD_PATH + self.equipmentGroupName + "/" + componentName
 
             if not os.path.isdir(installationPath):
                 raise FileNotFoundError("the installation path '" + installationPath + "' for component '" + componentName + "' does not exist.")
