@@ -4,3 +4,6 @@ class ConnectionLoader(EquipmentLoader):
 
     def test(self):
         print("hello from connection loader!")
+
+    def loadComponent(self, installationPath):
+        pass

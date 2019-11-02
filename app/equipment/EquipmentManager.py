@@ -32,7 +32,8 @@ class EquipmentManager():
             if not groupLoader:
                 continue
 
-            groupLoader.loadDefaultComponents()
+            defaultComponents = self.collection.getGroup(groupName)
+            groupLoader.loadDefaultComponents(defaultComponents)
 
     def _createGroupLoader(self, installationPath, groupName, customLoadPath=None):
 
