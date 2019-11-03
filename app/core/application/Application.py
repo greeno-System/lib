@@ -6,7 +6,7 @@ from ctypes import cdll, byref, create_string_buffer
 from lib.app.core.config.Config import Config
 from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
 from lib.app.equipment.EquipmentSet import EquipmentSet
-from lib.app.equipment.EquipmentManager import EquipmentManager
+from lib.app.equipment.Equipment import Equipment
 
 
 class Application():
@@ -35,8 +35,8 @@ class Application():
 
     def start(self):
 
-        self.equipmentManager = self._createEquipmentManager()
-        self.equipmentManager.loadEquipment()
+        self.equipment = self._createEquipment()
+        self.equipment.loadEquipment()
 
     def _setProcessName(self, processName):
 
@@ -86,12 +86,12 @@ class Application():
 
         return logger
     
-    def _createEquipmentManager(self):
+    def _createEquipment(self):
 
         file = os.getcwd() + "/../equipment.xml"
         self.equipmentSet = EquipmentSet(file)
 
-        return EquipmentManager(self.equipmentSet)
+        return Equipment(self.equipmentSet)
 
         #TODO: load equipment
 
@@ -104,8 +104,8 @@ class Application():
     def getStatusObserver(self):
         return self.statusObserver
 
-    def getEquipmentManager(self):
-        return self.equipmentManager
+    def getEquipment(self):
+        return self.equipment
 
     def getLogger(self):
         return self.logger

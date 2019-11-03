@@ -2,7 +2,7 @@ import os.path
 import logging
 import importlib
 from lib.app.equipment.EquipmentSet import EquipmentSet
-class EquipmentManager():
+class Equipment():
 
     def __init__(self, equipmentSet):
 
