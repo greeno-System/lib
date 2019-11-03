@@ -6,8 +6,8 @@
             <xsd:sequence>
 
                 <xsd:element name="name" type="xsd:string" />
-
                 <xsd:element name="label" type="xsd:string" />
+                <xsd:element name="class" type="xsd:string" />
 
             </xsd:sequence>
         </xsd:complexType>
