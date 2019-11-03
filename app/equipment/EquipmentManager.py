@@ -14,6 +14,8 @@ class EquipmentManager():
         from lib.app.core.application.Application import Application
         self.app = Application.app()
 
+        self.equipment = {}
+
     def loadEquipment(self):
         groups = self.set.getGroups()
 
@@ -24,18 +26,27 @@ class EquipmentManager():
             if not self.set.groupExists(groupName):
                 self.app.getLogger().warning("Equipment group with name '" + groupName + "' does not exist!")
                 continue
+
+            self.equipment[groupName] = {}
                 
             installationPath = EquipmentSet.BASE_CORE_PATH + groupName
 
-            groupLoader = self._createGroupLoader(installationPath, groupName, customLoadPath)
+            groupLoader = self._createGroupLoader(installationPath, groupName)
 
             if not groupLoader:
                 continue
 
             defaultComponents = self.set.getGroup(groupName)
-            groupLoader.loadDefaultComponents(defaultComponents)
 
-    def _createGroupLoader(self, installationPath, groupName, customLoadPath=None):
+            for componentName in defaultComponents:
+                installationPath = EquipmentSet.DEFAULT_LOAD_PATH + groupName + "/" + componentName + "/"
+
+                component = groupLoader.loadComponent(installationPath)
+
+                if component is not None and component is not False:
+                    self.equipment[groupName][componentName] = component
+
+    def _createGroupLoader(self, installationPath, groupName):
 
         if installationPath is None:
             raise ValueError("Value of group loader installation path is not given.")
@@ -54,7 +65,7 @@ class EquipmentManager():
             package = (installationPath + "/" + "Loader").replace("/", ".")
             loaderClass = getattr(importlib.import_module(package), loaderClass)
 
-            loader = loaderClass(groupName, customLoadPath)
+            loader = loaderClass(groupName)
 
         except Exception as e:
             self.app.getLogger().error(e)
@@ -62,4 +73,13 @@ class EquipmentManager():
             return False
 
         return loader
+
+    def get(self, groupName, componentName):
+        if not groupName in self.equipment:
+            return None
+
+        if not componentName in self.equipment[groupName]:
+            return None
+
+        return self.equipment[groupName][componentName]
         

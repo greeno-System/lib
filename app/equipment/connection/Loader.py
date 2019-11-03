@@ -1,4 +1,6 @@
 from lib.app.equipment.EquipmentLoader import EquipmentLoader
+from lib.app.core.config.Config import Config
+import os.path
 
 class ConnectionLoader(EquipmentLoader):
 
@@ -6,7 +8,16 @@ class ConnectionLoader(EquipmentLoader):
         print("hello from connection loader!")
 
     def loadComponent(self, installationPath):
-        pass
+        
+        config = self._createConnectionConfig(installationPath)
 
     def isLoadable(self):
         pass
+
+    def _createConnectionConfig(self, installationPath):
+        configFile = installationPath + "connection.xml"
+
+        if not os.path.isfile(configFile):
+            raise FileNotFoundError("Configuration file not found at '" + configFile + "'")
+
+        return Config(configFile)
