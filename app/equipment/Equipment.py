@@ -16,6 +16,9 @@ class Equipment():
 
         self.equipment = {}
 
+    def getSet(self):
+        return self.equipmentSet
+
     def loadEquipment(self):
         groups = self.set.getGroups()
 
@@ -28,7 +31,7 @@ class Equipment():
                 continue
 
             self.equipment[groupName] = {}
-                
+
             installationPath = EquipmentSet.BASE_CORE_PATH + groupName
 
             groupLoader = self._createGroupLoader(installationPath, groupName)
@@ -73,6 +76,19 @@ class Equipment():
             return False
 
         return loader
+
+    def deloadEquipment(self):
+        
+        for groupName,components in self.equipment.items():
+
+            installationPath = EquipmentSet.BASE_CORE_PATH + groupName
+            loader = self._createGroupLoader(installationPath, groupName)
+
+            for componentName,component in components.items():
+                loader.deloadComponent(component)
+
+        del self.equipment
+        self.equipment = {}
 
     def get(self, groupName, componentName):
         if not groupName in self.equipment:

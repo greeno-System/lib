@@ -1,18 +1,29 @@
 from lib.app.equipment.EquipmentLoader import EquipmentLoader
 from lib.app.core.config.Config import Config
 import os.path
+import importlib
 
 class ConnectionLoader(EquipmentLoader):
 
-    def test(self):
-        print("hello from connection loader!")
-
     def loadComponent(self, installationPath):
-        
-        config = self._createConnectionConfig(installationPath)
 
-    def isLoadable(self):
-        pass
+        try:
+            config = self._createConnectionConfig(installationPath)
+
+            className = config.get("class")
+            package = (installationPath + className).replace("/", ".")
+
+            connectionClass = getattr(importlib.import_module(package), className)
+
+            connection = connectionClass()
+            connection.open()
+
+            return connection
+
+        except Exception as e:
+            self.logger.error(e)
+
+            return None
 
     def _createConnectionConfig(self, installationPath):
         configFile = installationPath + "connection.xml"
@@ -21,3 +32,11 @@ class ConnectionLoader(EquipmentLoader):
             raise FileNotFoundError("Configuration file not found at '" + configFile + "'")
 
         return Config(configFile)
+
+    def deloadComponent(self, connection):
+
+        try:
+            if connection is not None:
+                connection.close()
+        except Exception as e:
+            self.logger.error(e)

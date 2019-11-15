@@ -10,13 +10,13 @@ class EquipmentLoader(ABC):
 
         self.logger = Application.app().getLogger()
         self.equipmentGroupName = equipmentGroupName
-
-    @abstractmethod
-    def isLoadable(self, installationPath):
-        pass
-    
+        
     @abstractmethod
     def loadComponent(self, installationPath):
+        pass
+
+    @abstractmethod
+    def deloadComponent(self, component):
         pass
 
         

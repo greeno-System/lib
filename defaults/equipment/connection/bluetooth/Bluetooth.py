@@ -1,4 +1,4 @@
-from lib.equipment.connection.MultiChannelConnection import MultiChannelConnection
+from lib.app.equipment.connection.MultiChannelConnection import MultiChannelConnection
 from lib.app.core.application.Application import Application
 import bluetooth
 
@@ -38,7 +38,7 @@ class Bluetooth(MultiChannelConnection):
 
         bluetooth.advertise_service(
             channel,
-            serviceName
+            serviceName,
             service_id=uuid,
             service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
             profiles=[bluetooth.SERIAL_PORT_PROFILE]

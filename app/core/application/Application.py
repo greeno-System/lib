@@ -88,15 +88,12 @@ class Application():
     
     def _createEquipment(self):
 
-        file = os.getcwd() + "/../equipment.xml"
-        self.equipmentSet = EquipmentSet(file)
+        setFile = os.getcwd() + "/../equipment.xml"
 
-        return Equipment(self.equipmentSet)
-
-        #TODO: load equipment
+        return Equipment(EquipmentSet(setFile))
 
     def stop(self):
-        pass
+        self.equipment.deloadEquipment()
 
     def reload(self):
         pass
