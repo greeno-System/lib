@@ -1,5 +1,6 @@
 import os.path
 from lib.app.equipment.EquipmentSetReader import EquipmentSetReader
+from lib.app.equipment.DefaultsReader import DefaultsReader
 from lib.app.core.config.Config import Config
 
 class EquipmentSet():
@@ -14,9 +15,20 @@ class EquipmentSet():
         if not os.path.isfile(equipmentFile):
             raise FileNotFoundError("Equipment file '" + equipmentFile + "' does not exist!")
 
+        self.defaults = self._createDefaults()
+
         self.config = self._createConfig(equipmentFile)
 
-    
+    def _createDefaults(self):
+
+        defaultsFile = EquipmentSet.DEFAULT_LOAD_PATH + "equipment.xml"
+        reader = DefaultsReader()
+
+        config = Config(defaultsFile, reader)
+
+        return config.getProperties()
+        
+
     def _createConfig(self, filePath):
         reader = EquipmentSetReader()
 
@@ -26,7 +38,6 @@ class EquipmentSet():
         return self.config.get("groups")
 
     def getGroup(self, groupName):
-
         return self.config.get("groups")[groupName]
 
     def groupExists(self, groupName):
@@ -50,3 +61,6 @@ class EquipmentSet():
 
     def hasCustomLoadPath(self):
         return self.config.get("customLoadPath") is not None
+
+    def getDefaults(self):
+        return self.defaults

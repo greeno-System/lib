@@ -5,7 +5,7 @@ import importlib
 
 class ConnectionLoader(EquipmentLoader):
 
-    def loadComponent(self, installationPath):
+    def createComponent(self, installationPath):
 
         try:
             config = self._createConnectionConfig(installationPath)
@@ -16,7 +16,6 @@ class ConnectionLoader(EquipmentLoader):
             connectionClass = getattr(importlib.import_module(package), className)
 
             connection = connectionClass()
-            connection.open()
 
             return connection
 
@@ -26,12 +25,15 @@ class ConnectionLoader(EquipmentLoader):
             return None
 
     def _createConnectionConfig(self, installationPath):
-        configFile = installationPath + "connection.xml"
+        configFile = installationPath + "/connection.xml"
 
         if not os.path.isfile(configFile):
             raise FileNotFoundError("Configuration file not found at '" + configFile + "'")
 
         return Config(configFile)
+
+    def loadComponent(self, component):
+        component.open()
 
     def deloadComponent(self, connection):
 

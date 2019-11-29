@@ -10,9 +10,13 @@ class EquipmentLoader(ABC):
 
         self.logger = Application.app().getLogger()
         self.equipmentGroupName = equipmentGroupName
+
+    @abstractmethod
+    def createComponent(self, installationPath):
+        pass
         
     @abstractmethod
-    def loadComponent(self, installationPath):
+    def loadComponent(self, component):
         pass
 
     @abstractmethod
