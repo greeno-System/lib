@@ -7,22 +7,16 @@ class ConnectionLoader(EquipmentLoader):
 
     def createComponent(self, installationPath):
 
-        try:
-            config = self._createConnectionConfig(installationPath)
+        config = self._createConnectionConfig(installationPath)
 
-            className = config.get("class")
-            package = (installationPath + className).replace("/", ".")
+        className = config.get("class")
+        package = (installationPath + className).replace("/", ".")
 
-            connectionClass = getattr(importlib.import_module(package), className)
+        connectionClass = getattr(importlib.import_module(package), className)
 
-            connection = connectionClass()
+        connection = connectionClass()
 
-            return connection
-
-        except Exception as e:
-            self.logger.error(e)
-
-            return None
+        return connection
 
     def _createConnectionConfig(self, installationPath):
         configFile = installationPath + "/connection.xml"
