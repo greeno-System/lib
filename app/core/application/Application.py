@@ -7,7 +7,7 @@ from lib.app.core.config.Config import Config
 from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
 from lib.app.equipment.EquipmentSet import EquipmentSet
 from lib.app.equipment.Equipment import Equipment
-
+from lib.app.core.action.Action import Action
 
 class Application():
 
@@ -34,6 +34,8 @@ class Application():
         self.statusObserver.start()
 
     def start(self):
+
+        self.action = Action.getInstance()
 
         self.equipment = self._createEquipment()
         self.equipment.loadEquipment()
@@ -101,8 +103,11 @@ class Application():
     def getStatusObserver(self):
         return self.statusObserver
 
-    def getEquipment(self):
+    def Equipment(self):
         return self.equipment
+
+    def Action(self):
+        return self.action
 
     def getLogger(self):
         return self.logger
