@@ -36,6 +36,7 @@ class Application():
     def start(self):
 
         self.action = Action.getInstance()
+        self.registerActionHandlers()
 
         self.equipment = self._createEquipment()
         self.equipment.loadEquipment()
@@ -87,6 +88,15 @@ class Application():
         logger.propagate = False
 
         return logger
+
+    def registerActionHandlers(self):
+
+        for item in os.listdir(Action.CORE_HANDLER_DIRECTORY):
+
+            installationDir = Action.CORE_HANDLER_DIRECTORY + item
+            handler = self.action.createHandler(installationDir, "core")
+
+            self.action.registerHandler(handler)
     
     def _createEquipment(self):
 
