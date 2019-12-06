@@ -12,11 +12,11 @@ class EquipmentLoader(ABC):
         self.equipmentGroupName = equipmentGroupName
 
     @abstractmethod
-    def createComponent(self, installationPath):
+    def createComponent(self, installationPath, config):
         pass
         
     @abstractmethod
-    def loadComponent(self, component):
+    def loadComponent(self, component, config):
         pass
 
     @abstractmethod

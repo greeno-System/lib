@@ -5,7 +5,7 @@ import importlib
 
 class DataInterfaceLoader(EquipmentLoader):
 
-    def createComponent(self, installationPath):
+    def createComponent(self, installationPath, componentConfig = False):
         config = self._createConfig(installationPath)
 
         className = config.get("class")
@@ -13,7 +13,7 @@ class DataInterfaceLoader(EquipmentLoader):
 
         interfaceClass = getattr(importlib.import_module(package), className)
         
-        interface = interfaceClass()
+        interface = interfaceClass(componentConfig)
 
         return interface
 

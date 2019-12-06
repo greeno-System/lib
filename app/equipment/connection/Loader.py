@@ -5,7 +5,7 @@ import importlib
 
 class ConnectionLoader(EquipmentLoader):
 
-    def createComponent(self, installationPath):
+    def createComponent(self, installationPath, config):
 
         config = self._createConnectionConfig(installationPath)
 

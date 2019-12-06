@@ -100,7 +100,7 @@ class Application():
     
     def _createEquipment(self):
 
-        setFile = os.getcwd() + "/../equipment.xml"
+        setFile = os.getcwd() + "/equipment.xml"
 
         return Equipment(EquipmentSet(setFile))
 

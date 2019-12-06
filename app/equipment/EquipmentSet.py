@@ -5,8 +5,8 @@ from lib.app.core.config.Config import Config
 
 class EquipmentSet():
 
-    BASE_CORE_PATH = "lib/app/equipment/"
     DEFAULT_LOAD_PATH = "lib/defaults/equipment/"
+    BASE_CORE_PATH = "lib/app/equipment/"
 
     def __init__(self, equipmentFile):
         if not equipmentFile:
@@ -20,8 +20,8 @@ class EquipmentSet():
 
         defaultDefinitionSet = self._createDefaultDefinitionSet(definitionSequence)
 
-        self.defaultSet = self._createDefaultSet(config, defaultDefinitionSet)
-        self.defaultSequence = self._createDefaultSequence(self.defaultSet, definitionSequence)
+        self.set = self._createDefaultSet(config, defaultDefinitionSet)
+        self.defaultSequence = self._createDefaultSequence(self.set, definitionSequence)
 
         del definitionSequence
         del defaultDefinitionSet
@@ -69,10 +69,12 @@ class EquipmentSet():
 
             defaultSet[groupName] = {}
 
-            for componentName in components:
+            for componentItem in components:
                 
+                componentName = componentItem["name"]
+
                 if componentName in defaultDefinitionSet[groupName]:
-                    defaultSet[groupName][componentName] = True
+                    defaultSet[groupName][componentName] = componentItem
 
         return defaultSet
 
@@ -96,15 +98,15 @@ class EquipmentSet():
             
 
     def getGroups(self):
-        return self.config.get("groups")
+        return self.set
 
     def getGroup(self, groupName):
         
         if groupName is None or not groupName:
             return False
 
-        if groupName in self.defaultSet:
-            return self.defaultSet[groupName]
+        if groupName in self.set:
+            return self.set[groupName]
 
         return False
 
@@ -113,7 +115,7 @@ class EquipmentSet():
         if groupName is None or not groupName:
             return False
 
-        return groupName in self.defaultSet
+        return groupName in self.set
 
     def has(self, groupName, name):
 
@@ -123,6 +125,20 @@ class EquipmentSet():
             return False
 
         return name in group
+
+    def hasConfig(self, groupName, componentName):
+        
+        if not self.has(groupName, componentName):
+            return False
+
+        return "config" in self.set[groupName][componentName]
+
+    def getConfig(self, groupName, componentName):
+
+        if not self.hasConfig(groupName, componentName):
+            return False
+
+        return self.set[groupName][componentName]["config"]
 
     # def getCustomLoadPath(self):
     #     return self.config.get("customLoadPath")

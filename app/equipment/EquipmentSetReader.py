@@ -68,7 +68,33 @@ class EquipmentSetReader(ConfigReader):
             for component in list(group.findall("component")):
                 componentName = component.attrib["name"]
 
-                groups[groupName].append(componentName)
+                config = self._getConfig(component)
+
+                componentItem = {}
+                componentItem["name"] = componentName
+                
+                if config is not False:
+                    componentItem["config"] = config
+
+                groups[groupName].append(componentItem)
 
         return groups
+
+    def _getConfig(self, component):
+
+        configElem = component.find("config")
+
+        if configElem is None:
+            return False
+
+        configs = list(configElem)
+        config = {}
+
+        for item in configs:
+            configName = item.tag
+            value = item.text.strip()
+            config[configName] = value
+
+        return config
+
 

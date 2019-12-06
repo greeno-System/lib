@@ -41,7 +41,9 @@ class Equipment():
             loader = loaders[groupName]
 
             componentInstallation = EquipmentSet.DEFAULT_LOAD_PATH + groupName + "/" + componentName + "/"
-            component = loader.createComponent(componentInstallation)
+            componentConfig = self.set.getConfig(groupName, componentName)
+
+            component = loader.createComponent(componentInstallation, componentConfig)
 
             
             self.equipment[groupName][componentName] = component
