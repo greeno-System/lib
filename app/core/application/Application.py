@@ -4,6 +4,7 @@ import logging
 import sys
 from ctypes import cdll, byref, create_string_buffer
 from lib.app.core.config.Config import Config
+from lib.app.core.application.SystemConfigReader import SystemConfigReader
 from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
 from lib.app.equipment.EquipmentSet import EquipmentSet
 from lib.app.equipment.Equipment import Equipment
@@ -61,7 +62,7 @@ class Application():
         if not os.path.isfile(configFilePath):
             raise FileNotFoundError("Configuration file does not exist at' " + configFilePath + "'")
 
-        config = Config(configFilePath)
+        config = Config(configFilePath, SystemConfigReader())
 
         return config
 
