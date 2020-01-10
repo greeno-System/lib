@@ -7,6 +7,7 @@ class Action():
 
     REQUEST_MODULE_KEY = "module"
     REQUEST_ACTION_KEY = "action"
+    REQUEST_DATA_KEY = "data"
 
     CORE_HANDLER_DIRECTORY = "lib/defaults/action/"
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataInterface 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="lib/schema/equipment/data_interface.xsd">
+
+    <name>web</name>
+    <label>Web</label>
+    <class>Web</class>
+
+</dataInterface>
