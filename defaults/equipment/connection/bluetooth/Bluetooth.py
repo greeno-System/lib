@@ -12,12 +12,14 @@ class Bluetooth(MultiChannelConnection):
         self.logger.debug("Closing bluetooth connection")
 
     
-    def write(self, channel):
-        pass
+    def write(self, channel, data):
+        channel.send(data)
 
     
     def read(self, channel):
-        pass
+        data = channel.recv(1024)
+
+        return data
 
     def createChannel(self):
         socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
