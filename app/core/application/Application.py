@@ -2,6 +2,7 @@ import os
 import os.path
 import logging
 import sys
+import signal
 from ctypes import cdll, byref, create_string_buffer
 from lib.app.core.config.Config import Config
 from lib.app.core.application.SystemConfigReader import SystemConfigReader
@@ -108,6 +109,8 @@ class Application():
     def stop(self):
         self.equipment.deloadEquipment()
 
+        os.kill(os.getpid(), signal.SIGKILL)
+
     def reload(self):
         pass
 
@@ -122,3 +125,6 @@ class Application():
 
     def getLogger(self):
         return self.logger
+
+    def isDebugMode(self):
+        return self.config.get("config")["debug"] == True
