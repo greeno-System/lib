@@ -6,11 +6,8 @@ class InfoHandler(ActionHandler):
 
     def request(self, jsonData):
 
-        return {
-            Action.REQUEST_MODULE_KEY: self.getModule(),
-            Action.REQUEST_ACTION_KEY: self.getAction(),
-            Action.RESPONSE_STATUS_KEY: Action.STATUS_OK,
-            Action.REQUEST_DATA_KEY: {
-                "version": Application.app().config.get("version")
-            }
-        }
+        response = self.createResponse()
+
+        response[Action.REQUEST_DATA_KEY]["version"] = Application.app().config.get("version")
+        
+        return response

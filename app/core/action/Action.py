@@ -12,6 +12,7 @@ class Action():
 
     STATUS_OK = 200
     STATUS_NOT_FOUND = 400
+    STATUS_NO_RESPONSE = 444
 
     CORE_HANDLER_DIRECTORY = "lib/defaults/action/"
 
