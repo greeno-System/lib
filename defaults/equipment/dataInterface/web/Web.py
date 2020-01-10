@@ -35,6 +35,5 @@ class Web(DataInterface):
 
         return Response(json.dumps(actionResponse), actionResponse["status"])
 
-
     def close(self):
         pass

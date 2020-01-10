@@ -8,6 +8,10 @@ class Action():
     REQUEST_MODULE_KEY = "module"
     REQUEST_ACTION_KEY = "action"
     REQUEST_DATA_KEY = "data"
+    RESPONSE_STATUS_KEY = "status"
+
+    STATUS_OK = 200
+    STATUS_NOT_FOUND = 400
 
     CORE_HANDLER_DIRECTORY = "lib/defaults/action/"
 
