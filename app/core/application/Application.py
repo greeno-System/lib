@@ -78,10 +78,14 @@ class Application():
             return False
 
         logger = logging.getLogger(processName)
-        logger.setLevel(logging.DEBUG)
-
         streamHandler = logging.StreamHandler()
-        streamHandler.setLevel(logging.DEBUG)
+
+        if self.isDebugMode(): 
+            logger.setLevel(logging.DEBUG)
+            streamHandler.setLevel(logging.DEBUG)
+        else:
+            logger.setLevel(logging.INFO)
+            streamHandler.setLevel(logging.INFO)
 
         formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
         streamHandler.setFormatter(formatter)
