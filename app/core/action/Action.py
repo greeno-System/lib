@@ -3,22 +3,25 @@ from lib.app.core.config.Config import Config
 import importlib
 class Action():
 
+    # singleton instance
     instance = None
 
+    # constants for request and response keys
     REQUEST_MODULE_KEY = "module"
     REQUEST_ACTION_KEY = "action"
     REQUEST_DATA_KEY = "data"
     RESPONSE_STATUS_KEY = "status"
 
+    # constants for response status
     STATUS_OK = 200
-    STATUS_NOT_FOUND = 400
+    STATUS_BAD_REQUEST = 400
     STATUS_NO_RESPONSE = 444
+    STATUS_ERROR = 500
 
+    # relative path of directory which contains the core action handlers
     CORE_HANDLER_DIRECTORY = "lib/defaults/action/"
 
-    def __init__(self):
-        self.handlers = {}
-
+    # returns the instance of the singleton
     @classmethod
     def getInstance(self):
         if Action.instance is None:
@@ -26,6 +29,14 @@ class Action():
 
         return Action.instance
 
+    # constructor
+    def __init__(self):
+        self.handlers = {}
+
+
+    # main function for a request to application
+    # searches for a suitable action handler
+    # return response from handler or in case of an error a generated one
     def request(self, jsonData):
         try:
 
@@ -43,7 +54,7 @@ class Action():
             if handler is None:
                 return self.createBadRequestResponse(
                     jsonData, 
-                    "No handler for request was found!"
+                    "Could not find a suitable handler for request!"
                 )
 
             response = handler.request(jsonData)
@@ -52,7 +63,7 @@ class Action():
                 return self.createNoResponseResponse(jsonData, "Handler did not send response.")
 
             if 'status' not in response:
-                response["status"] = 200
+                response["status"] = Action.STATUS_OK
 
             response[Action.REQUEST_MODULE_KEY] = module
             response[Action.REQUEST_ACTION_KEY] = action
@@ -62,6 +73,8 @@ class Action():
         except Exception as e:
             return self.createErrorResponse(jsonData, e)
     
+    # helper function to get registered action handler for module and action
+    # returns None if no suitable handler was registered
     def _getHandler(self, module, action):
         
         if module not in self.handlers:
@@ -72,6 +85,7 @@ class Action():
 
         return self.handlers[module][action]
 
+    # creates an action handler instance from given installation path
     def createHandler(self, installationPath, moduleName):
 
         if moduleName is None or not moduleName:
@@ -91,6 +105,7 @@ class Action():
 
         return handlerClass(moduleName, name)
 
+    # registers an action handler instance with its module name and its action name
     def registerHandler(self, actionHandler):
         moduleName = actionHandler.getModule().lower()
         name = actionHandler.getAction().lower()
@@ -100,6 +115,7 @@ class Action():
 
         self.handlers[moduleName][name] = actionHandler
 
+    # creates a response from request data with bad request status
     def createBadRequestResponse(self, jsonData, message):
 
         if Action.REQUEST_MODULE_KEY in jsonData:
@@ -113,7 +129,7 @@ class Action():
             action = "unknown"
 
         return {
-            'status': 400,
+            'status': Action.STATUS_BAD_REQUEST,
             'module': module,
             'action': action,
             'data': {
@@ -121,26 +137,28 @@ class Action():
             }
         }
 
+    # creates a response from request data with error status
     def createErrorResponse(self, jsonData, message):
 
         module = jsonData[Action.REQUEST_MODULE_KEY]
         action = jsonData[Action.REQUEST_ACTION_KEY]
 
         return {
-            'status': 500,
+            'status': Action.STATUS_ERROR,
             'module': module,
-            'action': action,
+            'action': action.STATUS_NOT_FOUND,
             'data': {
                 'message': message
             }
         }
     
+    # creates a response from request data with no response status
     def createNoResponseResponse(self, jsonData, message):
         module = jsonData["module"]
         action = jsonData["action"]
 
         return {
-            'status': 444,
+            'status': Action.STATUS_NO_RESPONSE,
             'module': module,
             'action': action,
             'data': {

@@ -12,7 +12,6 @@ class Web(DataInterface):
         super().__init__(config)
 
         self.app = Application.app()
-        self.action = self.app.Action()
 
         self.flaskInterface = Flask(__name__)
 
@@ -23,7 +22,11 @@ class Web(DataInterface):
         )
 
     def open(self):
-        self.flaskInterface.run(port=self.config.get("port"), debug=self.app.isDebugMode())
+        self.flaskInterface.run(
+            port=self.config.get("port"), 
+            debug=self.app.isDebugMode(),
+            use_reloader=False
+        )
 
     def request(self, module, action):
         actionRequest = {}
@@ -31,7 +34,7 @@ class Web(DataInterface):
         actionRequest[Action.REQUEST_ACTION_KEY] = action
         actionRequest[Action.REQUEST_DATA_KEY] = request.args
 
-        actionResponse = self.action.request(actionRequest)
+        actionResponse = self.request(actionRequest)
 
         return Response(json.dumps(actionResponse), actionResponse["status"])
 
