@@ -2,6 +2,7 @@ from threading import Thread
 from lib.app.system.SystemStatus import SystemStatus
 import os, os.path
 import sys
+import time
 
 class ApplicationStatusObserver(Thread):
 
@@ -20,6 +21,7 @@ class ApplicationStatusObserver(Thread):
         self.stop = False
 
         while self.status == SystemStatus.APPLICATION_RUNNING and not self.stop:
+            time.sleep(0.1)
             self.status = self.getStatusFromFile()
 
         self.isRunning = False

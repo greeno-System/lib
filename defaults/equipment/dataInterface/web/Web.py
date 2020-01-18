@@ -18,7 +18,7 @@ class Web(DataInterface):
         self.flaskInterface.add_url_rule(
             '/<module>/<action>',
             'index',
-            self.request
+            self.onRequest
         )
 
     def open(self):
@@ -28,7 +28,7 @@ class Web(DataInterface):
             use_reloader=False
         )
 
-    def request(self, module, action):
+    def onRequest(self, module, action):
         actionRequest = {}
         actionRequest[Action.REQUEST_MODULE_KEY] = module
         actionRequest[Action.REQUEST_ACTION_KEY] = action

@@ -33,6 +33,9 @@ class Action():
     def __init__(self):
         self.handlers = {}
 
+        from lib.app.core.application.Application import Application
+        self.logger = Application.app().getLogger()
+
 
     # main function for a request to application
     # searches for a suitable action handler
@@ -71,7 +74,8 @@ class Action():
             return response
 
         except Exception as e:
-            return self.createErrorResponse(jsonData, e)
+            self.logger.error(e)
+            return self.createErrorResponse(jsonData, "An error occured on your device.")
     
     # helper function to get registered action handler for module and action
     # returns None if no suitable handler was registered
@@ -146,7 +150,7 @@ class Action():
         return {
             'status': Action.STATUS_ERROR,
             'module': module,
-            'action': action.STATUS_NOT_FOUND,
+            'action': action,
             'data': {
                 'message': message
             }
