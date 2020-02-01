@@ -19,7 +19,7 @@ class Application():
     def app():
         return Application.application
 
-    def __init__(self, configFilePath):
+    def __init__(self, configFilePath, appFilePath):
 
         if Application.application is not None:
             raise RuntimeError("An application instance does already exist!")
@@ -27,6 +27,7 @@ class Application():
         Application.application = self
 
         self.config = self._createConfig(configFilePath)
+        self.appConfig = Config(appFilePath)
 
         self.logger = self._createLogger(self.config)
 
@@ -100,6 +101,14 @@ class Application():
         for item in os.listdir(Action.CORE_HANDLER_DIRECTORY):
 
             installationDir = Action.CORE_HANDLER_DIRECTORY + item
+            handler = self.action.createHandler(installationDir, "core")
+
+            self.action.registerHandler(handler)
+
+        customPath = self.appConfig.get("actionHandlers").strip("/")
+
+        for item in os.listdir(customPath):
+            installationDir = customPath + "/" + item
             handler = self.action.createHandler(installationDir, "core")
 
             self.action.registerHandler(handler)

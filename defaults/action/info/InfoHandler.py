@@ -2,9 +2,6 @@ from lib.app.core.action.ActionHandler import ActionHandler
 from lib.app.core.action.Action import Action
 from lib.app.core.application.Application import Application
 
-from time import gmtime, strftime
-from datetime import datetime
-
 class InfoHandler(ActionHandler):
 
     def request(self, jsonData):
@@ -15,12 +12,10 @@ class InfoHandler(ActionHandler):
         dataKey = Action.REQUEST_DATA_KEY
 
         data = {
-            'name': config.get('name'),
-            'version': config.get('version'),
-            'time': datetime.now().strftime("%d.%m.%Y %H:%M")
+            'name': config.get("name"),
+            'version': config.get("version")
         }
 
         response[dataKey] = data
-        
 
         return response
