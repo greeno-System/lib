@@ -22,4 +22,4 @@ class DataInterface(ABC):
         if jsonData is None:
             raise ValueError("No JSON Request found!")
 
-        return self.action.request(jsonData)
+        return self.action.request(jsonData).getJSON()

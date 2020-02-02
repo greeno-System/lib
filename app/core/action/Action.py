@@ -1,6 +1,9 @@
 import os.path
-from lib.app.core.config.Config import Config
 import importlib
+from lib.app.core.config.Config import Config
+from lib.app.core.action.Request import Request
+from lib.app.core.action.Response import Response
+
 class Action():
 
     # singleton instance
@@ -49,37 +52,35 @@ class Action():
                     "Module or action parameter is missing."
                 )
 
-            module = jsonData[Action.REQUEST_MODULE_KEY].lower()
-            action = jsonData[Action.REQUEST_ACTION_KEY].lower()
+            module = jsonData[Action.REQUEST_MODULE_KEY]
+            action = jsonData[Action.REQUEST_ACTION_KEY]
 
-            handler = self._getHandler(module, action)
+            request = Request(module, action)
+
+            if Action.REQUEST_DATA_KEY in jsonData:
+                request.setData(jsonData[Action.REQUEST_DATA_KEY])
+
+            response = Response(module, action)
+
+            handler = self.getHandler(module, action)
             
             if handler is None:
                 return self.createBadRequestResponse(
                     jsonData, 
-                    "Could not find a suitable handler for request!"
+                    "Could not find a registered handler for request!"
                 )
 
-            response = handler.request(jsonData)
-
-            if response is None or not response:
-                return self.createNoResponseResponse(jsonData, "Handler did not send response.")
-
-            if 'status' not in response:
-                response["status"] = Action.STATUS_OK
-
-            response[Action.REQUEST_MODULE_KEY] = module
-            response[Action.REQUEST_ACTION_KEY] = action
+            handler.request(request, response)
 
             return response
 
         except Exception as e:
             self.logger.error(e)
-            return self.createErrorResponse(jsonData, "An error occured on your device.")
+            return self.createErrorResponse(module, action)
     
     # helper function to get registered action handler for module and action
     # returns None if no suitable handler was registered
-    def _getHandler(self, module, action):
+    def getHandler(self, module, action):
         
         if module not in self.handlers:
             return None
@@ -120,7 +121,7 @@ class Action():
         self.handlers[moduleName][name] = actionHandler
 
     # creates a response from request data with bad request status
-    def createBadRequestResponse(self, jsonData, message):
+    def createBadRequestResponse(self, jsonData, message=None):
 
         if Action.REQUEST_MODULE_KEY in jsonData:
             module = jsonData[Action.REQUEST_MODULE_KEY]
@@ -132,41 +133,35 @@ class Action():
         else:
             action = "unknown"
 
-        return {
-            'status': Action.STATUS_BAD_REQUEST,
-            'module': module,
-            'action': action,
-            'data': {
+        response = Response(module, action)
+
+        if message is not None:
+            response.setData({
                 'message': message
-            }
-        }
+            })
+        
+        reponse.setStatus(Reponse.STATUS_BAD_REQUEST)
 
-    # creates a response from request data with error status
-    def createErrorResponse(self, jsonData, message):
+        return response
 
-        module = jsonData[Action.REQUEST_MODULE_KEY]
-        action = jsonData[Action.REQUEST_ACTION_KEY]
+    # creates a response with error status
+    def createErrorResponse(self, module, action):
 
-        return {
-            'status': Action.STATUS_ERROR,
-            'module': module,
-            'action': action,
-            'data': {
-                'message': message
-            }
-        }
+        response = Response(module, action)
+        response.setStatus(Response.STATUS_ERROR)
+
+        return response
     
     # creates a response from request data with no response status
-    def createNoResponseResponse(self, jsonData, message):
-        module = jsonData["module"]
-        action = jsonData["action"]
+    def createNoResponseResponse(self, module, action, message=None):
 
-        return {
-            'status': Action.STATUS_NO_RESPONSE,
-            'module': module,
-            'action': action,
-            'data': {
+        response = Response(module, action)
+        response.setStatus(Response.STATUS_NO_RESPONSE)
+
+        if message is not None:
+            response.setData({
                 'message': message
-            }
-        }
+            })
+
+        return response
     

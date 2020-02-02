@@ -19,7 +19,7 @@ class Web(DataInterface):
 
         self.flaskInterface.add_url_rule(
             '/<module>/<action>',
-            'moduleAction',
+            'index',
             self.onRequest
         )
 
@@ -44,7 +44,7 @@ class Web(DataInterface):
 
         actionResponse = self.request(actionRequest)
 
-        return Response(json.dumps(actionResponse), actionResponse["status"])
+        return Response(json.dumps(actionResponse), actionResponse[Action.RESPONSE_STATUS_KEY])
 
     def close(self):
         pass

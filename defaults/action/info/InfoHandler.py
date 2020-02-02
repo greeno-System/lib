@@ -4,18 +4,15 @@ from lib.app.core.application.Application import Application
 
 class InfoHandler(ActionHandler):
 
-    def request(self, jsonData):
-
-        response = self.createResponse()
+    def request(self, request, response):
 
         config = Application.app().getSystemConfig()
-        dataKey = Action.REQUEST_DATA_KEY
 
         data = {
             'name': config.get("name"),
             'version': config.get("version")
         }
 
-        response[dataKey] = data
+        response.setData(data)
 
         return response

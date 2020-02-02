@@ -9,7 +9,7 @@ class ActionHandler(ABC):
         self.action = action.lower()
 
     @abstractmethod
-    def request(self, jsonData):
+    def request(self, request, response):
         pass
 
     def getModule(self):
@@ -17,11 +17,3 @@ class ActionHandler(ABC):
 
     def getAction(self):
         return self.action
-
-    def createResponse(self):
-
-        return {
-            Action.REQUEST_MODULE_KEY: self.getModule(),
-            Action.REQUEST_ACTION_KEY: self.getAction(),
-            Action.REQUEST_DATA_KEY: {}
-        }
