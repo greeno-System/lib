@@ -5,8 +5,9 @@ class Response():
     STATUS_BAD_REQUEST = 400
     STATUS_NO_RESPONSE = 444
     STATUS_ERROR = 500
+    STATUS_NOT_FOUND = 404
 
-    STATUS_LIST = [200, 400, 444, 500]
+    STATUS_LIST = [200, 400, 444, 500, 404]
 
     # constructor
     def __init__(self, module=None, action=None, data=[]):

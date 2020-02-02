@@ -1,6 +1,7 @@
 from lib.app.equipment.dataInterface.DataInterface import DataInterface
 from lib.app.core.application.Application import Application
 from lib.app.core.action.Action import Action
+from lib.app.core.action.Response import Response as GreenoResponse
 from flask import Flask
 from flask_cors import CORS
 from flask import request
@@ -44,7 +45,14 @@ class Web(DataInterface):
 
         actionResponse = self.request(actionRequest)
 
-        return Response(json.dumps(actionResponse), actionResponse[Action.RESPONSE_STATUS_KEY])
+        status = actionResponse[Action.RESPONSE_STATUS_KEY]
+
+        if status != GreenoResponse.STATUS_OK:
+            return Response(status=status)
+        else:
+            return Response(json.dumps(actionResponse), status)
+
+
 
     def close(self):
         pass

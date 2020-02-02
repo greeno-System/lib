@@ -15,12 +15,6 @@ class Action():
     REQUEST_DATA_KEY = "data"
     RESPONSE_STATUS_KEY = "status"
 
-    # constants for response status
-    STATUS_OK = 200
-    STATUS_BAD_REQUEST = 400
-    STATUS_NO_RESPONSE = 444
-    STATUS_ERROR = 500
-
     # relative path of directory which contains the core action handlers
     CORE_HANDLER_DIRECTORY = "lib/defaults/action/"
 
@@ -65,8 +59,9 @@ class Action():
             handler = self.getHandler(module, action)
             
             if handler is None:
-                return self.createBadRequestResponse(
-                    jsonData, 
+                return self.createNotFoundResponse(
+                    module,
+                    action, 
                     "Could not find a registered handler for request!"
                 )
 
@@ -140,7 +135,7 @@ class Action():
                 'message': message
             })
         
-        reponse.setStatus(Reponse.STATUS_BAD_REQUEST)
+        response.setStatus(Response.STATUS_BAD_REQUEST)
 
         return response
 
@@ -163,5 +158,18 @@ class Action():
                 'message': message
             })
 
+        return response
+
+    def createNotFoundResponse(self, module, action, message=None):
+
+        response = Response(module, action)
+
+        response.setStatus(Response.STATUS_NOT_FOUND)
+
+        if message is not None:
+            response.setData({
+                'message': message
+            })
+        
         return response
     
