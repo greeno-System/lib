@@ -8,7 +8,7 @@ class InfoHandler(ActionHandler):
 
         response = self.createResponse()
 
-        config = Application.app().config
+        config = Application.app().getSystemConfig()
         dataKey = Action.REQUEST_DATA_KEY
 
         data = {

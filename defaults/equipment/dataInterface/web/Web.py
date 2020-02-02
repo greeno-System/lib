@@ -6,6 +6,7 @@ from flask_cors import CORS
 from flask import request
 from flask import Response
 import json
+import _thread
 
 class Web(DataInterface):
 
@@ -26,6 +27,9 @@ class Web(DataInterface):
 
         self.cors = CORS(self.flaskInterface)
 
+        _thread.start_new_thread(self._runFlask, ())
+
+    def _runFlask(self):
         self.flaskInterface.run(
             port=self.config.get("port"), 
             debug=self.app.isDebugMode(),

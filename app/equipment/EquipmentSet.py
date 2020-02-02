@@ -34,7 +34,7 @@ class EquipmentSet():
 
         config = Config(defaultsFile, reader)
 
-        return config.getProperties()
+        return config.getAll()
 
     def _createConfig(self, filePath):
         reader = EquipmentSetReader()

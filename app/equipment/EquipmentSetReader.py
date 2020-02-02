@@ -4,15 +4,7 @@ import xml.etree.ElementTree as ET
 
 class EquipmentSetReader(ConfigReader):
 
-    def load(self, filePath):
-        if not os.path.isfile(filePath):
-            raise FileNotFoundError("File '" + filePath + "' does not exist!")
-
-        if not self.isSchemaValid(filePath):
-            raise ValueError("The equipment file is not valid to equipment schema!")
-
-        tree = ET.parse(filePath)
-        root = tree.getroot()
+    def load(self, root):
 
         properties = {}
 

@@ -5,7 +5,17 @@
         <xsd:complexType>
             <xsd:sequence>
 
-                <xsd:element name="actionHandlers" type="xsd:string" />
+            <xsd:element name="paths">
+                <xsd:complexType>
+                    <xsd:sequence>
+
+                        <xsd:element name="systemStatus" type="xsd:string" />
+                        <xsd:element name="equipmentSet" type="xsd:string" />
+                        <xsd:element name="actionHandlers" type="xsd:string" />
+
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
 
             </xsd:sequence>
         </xsd:complexType>

@@ -6,6 +6,7 @@ import signal
 from ctypes import cdll, byref, create_string_buffer
 from lib.app.core.config.Config import Config
 from lib.app.core.application.SystemConfigReader import SystemConfigReader
+from lib.app.core.application.AppConfigReader import AppConfigReader
 from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
 from lib.app.equipment.EquipmentSet import EquipmentSet
 from lib.app.equipment.Equipment import Equipment
@@ -13,37 +14,48 @@ from lib.app.core.action.Action import Action
 
 class Application():
 
+    # the static application instance
     application = None
 
+    # static method to get application instance
     @staticmethod
     def app():
         return Application.application
 
-    def __init__(self, configFilePath, appFilePath):
+    # constructor
+    def __init__(
+        self, 
+        systemFile = "system.xml", 
+        applicationFile = "app.xml",
+    ):
 
         if Application.application is not None:
             raise RuntimeError("An application instance does already exist!")
 
         Application.application = self
 
-        self.config = self._createConfig(configFilePath)
-        self.appConfig = Config(appFilePath)
+        self.systemConfig = self._createSystemConfig(systemFile)
+        self.appConfig = self._createAppConfig(applicationFile)
+        self.equipmentFile = self.appConfig.get('paths')["equipmentSet"]
 
-        self.logger = self._createLogger(self.config)
+        self.logger = self._createLogger(self.systemConfig)
 
-        self._setProcessName(self.config.get("applicationProcess"))
-        statusFile = os.getcwd() + "/../APPLICATION_STATUS"
+        self._setProcessName(self.systemConfig.get("applicationProcess"))
+
+        statusFile = self.appConfig.get("paths")["systemStatus"]
+
         self.statusObserver = ApplicationStatusObserver(self, statusFile)
         self.statusObserver.start()
 
+    #starts the application and does main functionality
     def start(self):
+        self.equipment = self._createEquipment()
+        self.equipment.loadEquipment()
 
         self.action = Action.getInstance()
         self.registerActionHandlers()
 
-        self.equipment = self._createEquipment()
-        self.equipment.loadEquipment()
-
+    # helper function to change the name of the python process
     def _setProcessName(self, processName):
 
         if processName == None or not processName:
@@ -56,10 +68,11 @@ class Application():
         buff.value = bytes(processName, "UTF-8")
         libc.prctl(15, byref(buff), 0, 0, 0)
 
-    def _createConfig(self, configFilePath):
+    # creates a config object parsed from given file for system information
+    def _createSystemConfig(self, configFilePath):
 
         if not configFilePath:
-            raise ValueError("no file path for application config given!")
+            raise ValueError("no file path for system config given!")
 
         if not os.path.isfile(configFilePath):
             raise FileNotFoundError("Configuration file does not exist at' " + configFilePath + "'")
@@ -68,6 +81,16 @@ class Application():
 
         return config
 
+    def _createAppConfig(self, configFilePath):
+        if not configFilePath:
+            raise ValueError("no file path for app config given!")
+
+        if not os.path.isfile(configFilePath):
+            raise FileNotFoundError("Configuration file does not exist at' " + configFilePath + "'")
+
+        return Config(configFilePath, AppConfigReader())
+
+    # creates the main logger object for the application
     def _createLogger(self, config):
 
         if config is None:
@@ -96,6 +119,7 @@ class Application():
 
         return logger
 
+    # registers core action handlers from lib and application
     def registerActionHandlers(self):
 
         for item in os.listdir(Action.CORE_HANDLER_DIRECTORY):
@@ -105,7 +129,10 @@ class Application():
 
             self.action.registerHandler(handler)
 
-        customPath = self.appConfig.get("actionHandlers").strip("/")
+        customPath = self.appConfig.get("paths")["actionHandlers"].strip("/")
+
+        if not os.path.isdir(customPath):
+            raise ValueError("Could not find a directory for action handlers at '" + customPath + "'")
 
         for item in os.listdir(customPath):
             installationDir = customPath + "/" + item
@@ -113,31 +140,47 @@ class Application():
 
             self.action.registerHandler(handler)
     
+    # creates the applications equipment object
     def _createEquipment(self):
 
-        setFile = os.getcwd() + "/equipment.xml"
+        setFile = self.appConfig.get("paths")["equipmentSet"]
 
         return Equipment(EquipmentSet(setFile))
 
+    # shutdown the application and kill the process
     def stop(self):
         self.equipment.deloadEquipment()
 
         os.kill(os.getpid(), signal.SIGKILL)
 
+    # reloads the application
     def reload(self):
         pass
 
+    # returns the status observer
     def getStatusObserver(self):
         return self.statusObserver
 
+    # returns the equipment
     def Equipment(self):
         return self.equipment
 
+    # returns the action object
     def Action(self):
         return self.action
 
+    # returns the main logger
     def getLogger(self):
         return self.logger
 
+    # returns True if the application is in debug mode
     def isDebugMode(self):
-        return self.config.get("config")["debug"] == True
+        return self.systemConfig.get("config")["debug"] == True
+
+    # returns the application config
+    def getAppConfig(self):
+        return self.appConfig
+
+    # returns the system configuration
+    def getSystemConfig(self):
+        return self.systemConfig

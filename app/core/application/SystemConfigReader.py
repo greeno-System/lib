@@ -5,27 +5,16 @@ import xmlschema
 
 class SystemConfigReader(ConfigReader):
 
-    def load(self, filePath):
-        if not os.path.isfile(filePath):
-            raise FileNotFoundError("File '" + filePath + "' does not exist!")
+    # loads the system information with its configs
+    def load(self, rootElement):
 
-        if not self.isSchemaValid(filePath):
-            raise ValueError("The equipment file is not valid to equipment schema!")
+        properties = super().load(rootElement)
 
-        properties = super().load(filePath)
+        configElement = rootElement.find("config")
+        configs = super().load(configElement)
 
-        tree = ET.parse(filePath)
-        root = tree.getroot()
-
-        configs = self._getConfigs(root)
+        configs["debug"] = bool(configs["debug"])
 
         properties["config"] = configs
 
         return properties
-
-    def _getConfigs(self, rootElement):
-        configElem = rootElement.find("config")
-
-        return {
-            'debug': configElem.find("debug").text.strip() == 'true'
-        }
