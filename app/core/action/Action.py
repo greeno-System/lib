@@ -33,7 +33,6 @@ class Action():
         from lib.app.core.application.Application import Application
         self.logger = Application.app().getLogger()
 
-
     # main function for a request to application
     # searches for a suitable action handler
     # return response from handler or in case of an error a generated one
@@ -115,7 +114,7 @@ class Action():
 
         self.handlers[moduleName][name] = actionHandler
 
-    # creates a response from request data with bad request status
+    # creates a response from request data with "bad request" status
     def createBadRequestResponse(self, jsonData, message=None):
 
         if Action.REQUEST_MODULE_KEY in jsonData:
@@ -139,7 +138,7 @@ class Action():
 
         return response
 
-    # creates a response with error status
+    # creates a response with "error" status
     def createErrorResponse(self, module, action):
 
         response = Response(module, action)
@@ -147,7 +146,7 @@ class Action():
 
         return response
     
-    # creates a response from request data with no response status
+    # creates a response from request data with "no response" status
     def createNoResponseResponse(self, module, action, message=None):
 
         response = Response(module, action)
@@ -160,10 +159,10 @@ class Action():
 
         return response
 
+    # creates a response with "not found" status
     def createNotFoundResponse(self, module, action, message=None):
 
         response = Response(module, action)
-
         response.setStatus(Response.STATUS_NOT_FOUND)
 
         if message is not None:

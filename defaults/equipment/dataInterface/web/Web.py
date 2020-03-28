@@ -47,12 +47,10 @@ class Web(DataInterface):
 
         status = actionResponse[Action.RESPONSE_STATUS_KEY]
 
-        if status != GreenoResponse.STATUS_OK:
+        if status is not GreenoResponse.STATUS_OK:
             return Response(status=status)
         else:
             return Response(json.dumps(actionResponse), status)
-
-
 
     def close(self):
         pass

@@ -81,6 +81,7 @@ class Application():
 
         return config
 
+    # creates a config object for application
     def _createAppConfig(self, configFilePath):
         if not configFilePath:
             raise ValueError("no file path for app config given!")
@@ -122,21 +123,21 @@ class Application():
     # registers core action handlers from lib and application
     def registerActionHandlers(self):
 
-        for item in os.listdir(Action.CORE_HANDLER_DIRECTORY):
-
-            installationDir = Action.CORE_HANDLER_DIRECTORY + item
-            handler = self.action.createHandler(installationDir, "core")
-
-            self.action.registerHandler(handler)
+        self._registerActionHandlersFromDirectory(Action.CORE_HANDLER_DIRECTORY, "core")
 
         customPath = self.appConfig.get("paths")["actionHandlers"].strip("/")
 
         if not os.path.isdir(customPath):
             raise ValueError("Could not find a directory for action handlers at '" + customPath + "'")
 
-        for item in os.listdir(customPath):
-            installationDir = customPath + "/" + item
-            handler = self.action.createHandler(installationDir, "core")
+        self._registerActionHandlersFromDirectory(customPath, "core")
+
+    # helper function to scan a directory and create action handlers
+    def _registerActionHandlersFromDirectory(self, directory, moduleName):
+        
+        for item in os.listdir(directory):
+            installationDir = directory.strip("/") + "/" + item
+            handler = self.action.createHandler(installationDir, moduleName)
 
             self.action.registerHandler(handler)
     
