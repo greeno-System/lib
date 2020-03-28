@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="application">
+        <xsd:complexType>
+            <xsd:sequence>
+
+            <xsd:element name="paths">
+                <xsd:complexType>
+                    <xsd:sequence>
+
+                        <xsd:element name="systemStatus" type="xsd:string" />
+                        <xsd:element name="equipmentSet" type="xsd:string" />
+                        <xsd:element name="actionHandlers" type="xsd:string" />
+
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

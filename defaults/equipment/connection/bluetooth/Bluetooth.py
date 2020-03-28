@@ -1,22 +1,25 @@
-from lib.equipment.connection.MultiChannelConnection import MultiChannelConnection
+from lib.app.equipment.connection.MultiChannelConnection import MultiChannelConnection
+from lib.app.core.application.Application import Application
 import bluetooth
 
 class Bluetooth(MultiChannelConnection):
     
     def open(self):
-        print("opening bluetooth connection!")
+        self.logger.debug("Opening bluetooth connection")
 
     
     def close(self):
-        print("closing bluetooth connection!")
+        self.logger.debug("Closing bluetooth connection")
 
     
-    def write(self, channel):
-        pass
+    def write(self, channel, data):
+        channel.send(data)
 
     
     def read(self, channel):
-        pass
+        data = channel.recv(1024)
+
+        return data
 
     def createChannel(self):
         socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
@@ -37,7 +40,7 @@ class Bluetooth(MultiChannelConnection):
 
         bluetooth.advertise_service(
             channel,
-            serviceName
+            serviceName,
             service_id=uuid,
             service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
             profiles=[bluetooth.SERIAL_PORT_PROFILE]

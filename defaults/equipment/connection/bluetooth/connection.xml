@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <connection 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="lib/schema/connection.xsd">
+    xsi:noNamespaceSchemaLocation="lib/schema/equipment/connection.xsd">
 
     <name>bluetooth</name>
     <label>Bluetooth</label>
+    <class>Bluetooth</class>
 
 </connection>

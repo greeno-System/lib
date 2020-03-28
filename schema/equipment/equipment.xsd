@@ -4,8 +4,6 @@
     <xsd:element name="equipment">
         <xsd:complexType>
             <xsd:sequence>
-
-                <xsd:element name="customLoadPath" minOccurs="0" maxOccurs="1" type="xsd:string" />
         
                 <xsd:element name="defaults">
                     <xsd:complexType>
@@ -18,19 +16,25 @@
                                         
                                             <xsd:element name="component" minOccurs="1" maxOccurs="unbounded">
                                                 <xsd:complexType>
-                                                    <xsd:simpleContent>
 
-                                                        <xsd:extension base="xsd:string">
-                                                            <xsd:attribute name="name" type="xsd:string" />
-                                                        </xsd:extension>                                                 
+                                                    <xsd:sequence>
+                                                           <xsd:element name="config" minOccurs="0">
+                                                                <xsd:complexType>
+                                                                    <xsd:sequence>
+                                                                        <xsd:any minOccurs="1" maxOccurs="unbounded" />
+                                                                    </xsd:sequence>
+                                                                </xsd:complexType>
+                                                            </xsd:element>                         
+                                                    </xsd:sequence>
 
-                                                    </xsd:simpleContent>
+                                                    <xsd:attribute name="name" type="xsd:string" use="required"/>
+                                                    
                                                 </xsd:complexType>
                                             </xsd:element>
                                         
                                         </xsd:sequence>
 
-                                        <xsd:attribute name="name" type="xsd:string" />
+                                        <xsd:attribute name="name" type="xsd:string" use="required" />
 
                                 </xsd:complexType>
                             </xsd:element>
@@ -38,6 +42,12 @@
                         </xsd:sequence>
                     </xsd:complexType>
                 </xsd:element>
+
+                <xsd:sequence minOccurs="0" maxOccurs="1">
+
+                    <xsd:element name="customLoadPath" minOccurs="1" maxOccurs="1" type="xsd:string" />
+
+                </xsd:sequence>
 
             </xsd:sequence>
         </xsd:complexType>

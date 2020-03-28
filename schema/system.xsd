@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-    <xsd:element name="system" type="systemType" />
+    <xsd:element name="system">
 
-    <xsd:complexType name="systemType">
-        <xsd:sequence>
+        <xsd:complexType>
+            <xsd:sequence>
 
-            <xsd:element name="name" type="xsd:string" />
-            <xsd:element name="version" type="xsd:string" />
-            <xsd:element name="applicationProcess" type="xsd:string" /> 
+                <xsd:element name="name" type="xsd:string" />
+                <xsd:element name="version" type="xsd:string" />
+                <xsd:element name="applicationProcess" type="xsd:string" /> 
 
-        </xsd:sequence>
-    </xsd:complexType>
+                <xsd:element name="config" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:sequence>
+
+                            <xsd:element name="debug" type="xsd:boolean" />
+
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+
+            </xsd:sequence>
+        </xsd:complexType>
+
+    </xsd:element>
 
 </xsd:schema>
 

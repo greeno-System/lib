@@ -2,17 +2,9 @@ from lib.app.core.config.ConfigReader import ConfigReader
 import os.path
 import xml.etree.ElementTree as ET
 
-class EquipmentCollectionReader(ConfigReader):
+class EquipmentSetReader(ConfigReader):
 
-    def load(self, filePath):
-        if not os.path.isfile(filePath):
-            raise FileNotFoundError("File '" + filePath + "' does not exist!")
-
-        if not self.isSchemaValid(filePath):
-            raise ValueError("The equipment file is not valid to equipment schema!")
-
-        tree = ET.parse(filePath)
-        root = tree.getroot()
+    def load(self, root):
 
         properties = {}
 
@@ -41,7 +33,7 @@ class EquipmentCollectionReader(ConfigReader):
 
             return False
 
-        return root.find("customLoadPath").text.strip()
+        return root.find("customLoadPath").text.strip().strip("/") + "/"
 
     def _getDefaults(self, root):
 
@@ -68,7 +60,33 @@ class EquipmentCollectionReader(ConfigReader):
             for component in list(group.findall("component")):
                 componentName = component.attrib["name"]
 
-                groups[groupName].append(componentName)
+                config = self._getConfig(component)
+
+                componentItem = {}
+                componentItem["name"] = componentName
+                
+                if config is not False:
+                    componentItem["config"] = config
+
+                groups[groupName].append(componentItem)
 
         return groups
+
+    def _getConfig(self, component):
+
+        configElem = component.find("config")
+
+        if configElem is None:
+            return False
+
+        configs = list(configElem)
+        config = {}
+
+        for item in configs:
+            configName = item.tag
+            value = item.text.strip()
+            config[configName] = value
+
+        return config
+
 

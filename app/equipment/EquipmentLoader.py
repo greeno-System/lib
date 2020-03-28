@@ -1,21 +1,27 @@
 from abc import ABC
 from abc import abstractmethod
+from lib.app.core.application.Application import Application
+from lib.app.equipment.EquipmentSet import EquipmentSet
+import os.path
 
 class EquipmentLoader(ABC):
 
-    def __init__(self, equipmentGroupName, customBasePath = None):
-        self.defaultLoadPath = "lib/defaults/" + equipmentGroupName
+    def __init__(self, equipmentGroupName):
 
-        if customBasePath:
-            self.customLoadPath = customBasePath.strip("/") + "/" + equipmentGroupName
-        else:
-            self.customLoadPath = None
+        self.logger = Application.app().getLogger()
+        self.equipmentGroupName = equipmentGroupName
 
-    
-    def loadDefaultComponents(self, componentDirectories):
+    @abstractmethod
+    def createComponent(self, installationPath, config):
+        pass
+        
+    @abstractmethod
+    def loadComponent(self, component, config):
         pass
 
-    def loadCustomComponents(self):
+    @abstractmethod
+    def deloadComponent(self, component):
         pass
+
         
     

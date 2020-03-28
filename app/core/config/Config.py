@@ -1,8 +1,18 @@
 import os.path
 from lib.app.core.config.ConfigReader import ConfigReader
+import xml.etree.ElementTree as ET
+import xmlschema
 
 class Config():
 
+    # constructor
+    # takes the relative or absolute path to the xml file,
+    # an optional config reader and an optional 'extend' flag
+    #
+    # if reader is None a default reader will be used
+    # the custom reader can extend the default reader with extend=True
+    #
+    # config will be loaded automatically
     def __init__(self, path, reader=None, extend=False):
 
         if path == None:
@@ -20,25 +30,21 @@ class Config():
 
 
         self.path = path
-        self.load()
+        self.reload()
 
+    # (re)loads the properties from reader(s)
+    # existing properties will be overwritten
+    def reload(self):
 
-    def load(self):
-
-        self.properties = self.reader.load(self.path)
+        self.properties = self.reader.loadFromFile(self.path)
 
         if self.extendReader != None:
-            props = self.extendReader.load(self.path)
+            props = self.extendReader.loadFromFile(self.path)
             self.properties.update(props)
 
         self.loaded = True
 
-
-    def print(self):
-        for key, value in self.properties.items():
-            print(key + ": " + value)
-
-
+    # returns the value of a property
     def get(self, propertyname):
 
         if propertyname in self.properties:
@@ -46,7 +52,6 @@ class Config():
             
         return None
             
-
-    def getProperties(self):
+    # returns all properties
+    def getAll(self):
         return self.properties
-        

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<equipment
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="lib/schema/equipment/equipment_defaults.xsd">
+
+    <component name="bluetooth" group="connection" />
+    <component name="bluetooth" group="dataInterface" />
+    <component name="web" group="dataInterface" />
+
+</equipment>

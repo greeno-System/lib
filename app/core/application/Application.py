@@ -1,34 +1,61 @@
 import os
 import os.path
+import logging
+import sys
+import signal
 from ctypes import cdll, byref, create_string_buffer
 from lib.app.core.config.Config import Config
+from lib.app.core.application.SystemConfigReader import SystemConfigReader
+from lib.app.core.application.AppConfigReader import AppConfigReader
 from lib.app.system.ApplicationStatusObserver import ApplicationStatusObserver
-from lib.app.equipment.EquipmentCollection import EquipmentCollection
-from lib.app.equipment.EquipmentManager import EquipmentManager
-
+from lib.app.equipment.EquipmentSet import EquipmentSet
+from lib.app.equipment.Equipment import Equipment
+from lib.app.core.action.Action import Action
 
 class Application():
 
-    app = None
+    # the static application instance
+    application = None
 
+    # static method to get application instance
     @staticmethod
     def app():
-        return Application.app
+        return Application.application
 
-    def __init__(self, configFilePath):
-        Application.app = self
-        self.config = self._createConfig(configFilePath)
+    # constructor
+    def __init__(
+        self, 
+        systemFile = "system.xml", 
+        applicationFile = "app.xml",
+    ):
 
-        statusFile = os.getcwd() + "/../APPLICATION_STATUS"
+        if Application.application is not None:
+            raise RuntimeError("An application instance does already exist!")
+
+        Application.application = self
+
+        self.systemConfig = self._createSystemConfig(systemFile)
+        self.appConfig = self._createAppConfig(applicationFile)
+        self.equipmentFile = self.appConfig.get('paths')["equipmentSet"]
+
+        self.logger = self._createLogger(self.systemConfig)
+
+        self._setProcessName(self.systemConfig.get("applicationProcess"))
+
+        statusFile = self.appConfig.get("paths")["systemStatus"]
+
         self.statusObserver = ApplicationStatusObserver(self, statusFile)
-
-    def start(self):
-        self._setProcessName(self.config.get("applicationProcess"))
         self.statusObserver.start()
 
-        self.equipmentManager = self._createEquipmentManager()
-        self.equipmentManager.loadEquipment()
+    #starts the application and does main functionality
+    def start(self):
+        self.equipment = self._createEquipment()
+        self.equipment.loadEquipment()
 
+        self.action = Action.getInstance()
+        self.registerActionHandlers()
+
+    # helper function to change the name of the python process
     def _setProcessName(self, processName):
 
         if processName == None or not processName:
@@ -41,35 +68,120 @@ class Application():
         buff.value = bytes(processName, "UTF-8")
         libc.prctl(15, byref(buff), 0, 0, 0)
 
-    def _createConfig(self, configFilePath):
+    # creates a config object parsed from given file for system information
+    def _createSystemConfig(self, configFilePath):
 
         if not configFilePath:
-            raise ValueError("no file path for application config given!")
+            raise ValueError("no file path for system config given!")
 
         if not os.path.isfile(configFilePath):
             raise FileNotFoundError("Configuration file does not exist at' " + configFilePath + "'")
 
-        config = Config(configFilePath)
+        config = Config(configFilePath, SystemConfigReader())
 
         return config
+
+    # creates a config object for application
+    def _createAppConfig(self, configFilePath):
+        if not configFilePath:
+            raise ValueError("no file path for app config given!")
+
+        if not os.path.isfile(configFilePath):
+            raise FileNotFoundError("Configuration file does not exist at' " + configFilePath + "'")
+
+        return Config(configFilePath, AppConfigReader())
+
+    # creates the main logger object for the application
+    def _createLogger(self, config):
+
+        if config is None:
+            return False
+
+        processName = config.get("applicationProcess")
+
+        if processName is None or processName.strip() == "":
+            return False
+
+        logger = logging.getLogger(processName)
+        streamHandler = logging.StreamHandler()
+
+        if self.isDebugMode(): 
+            logger.setLevel(logging.DEBUG)
+            streamHandler.setLevel(logging.DEBUG)
+        else:
+            logger.setLevel(logging.INFO)
+            streamHandler.setLevel(logging.INFO)
+
+        formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+        streamHandler.setFormatter(formatter)
+
+        logger.addHandler(streamHandler)
+        logger.propagate = False
+
+        return logger
+
+    # registers core action handlers from lib and application
+    def registerActionHandlers(self):
+
+        self._registerActionHandlersFromDirectory(Action.CORE_HANDLER_DIRECTORY, "core")
+
+        customPath = self.appConfig.get("paths")["actionHandlers"].strip("/")
+
+        if not os.path.isdir(customPath):
+            raise ValueError("Could not find a directory for action handlers at '" + customPath + "'")
+
+        self._registerActionHandlersFromDirectory(customPath, "core")
+
+    # helper function to scan a directory and create action handlers
+    def _registerActionHandlersFromDirectory(self, directory, moduleName):
+        
+        for item in os.listdir(directory):
+            installationDir = directory.strip("/") + "/" + item
+            handler = self.action.createHandler(installationDir, moduleName)
+
+            self.action.registerHandler(handler)
     
-    def _createEquipmentManager(self):
+    # creates the applications equipment object
+    def _createEquipment(self):
 
-        file = os.getcwd() + "/../equipment.xml"
-        self.equipmentCollection = EquipmentCollection(file)
+        setFile = self.appConfig.get("paths")["equipmentSet"]
 
-        return EquipmentManager(self.equipmentCollection)
+        return Equipment(EquipmentSet(setFile))
 
-        #TODO: load equipment
-
+    # shutdown the application and kill the process
     def stop(self):
-        pass
+        self.equipment.deloadEquipment()
 
+        os.kill(os.getpid(), signal.SIGKILL)
+
+    # reloads the application
     def reload(self):
         pass
 
+    # returns the status observer
     def getStatusObserver(self):
         return self.statusObserver
 
-    def getEquipmentManager(self):
-        return self.equipmentManager
+    # returns the equipment
+    def Equipment(self):
+        return self.equipment
+
+    # returns the action object
+    def Action(self):
+        return self.action
+
+    # returns the main logger
+    def getLogger(self):
+        return self.logger
+
+    # returns True if the application is in debug mode
+    def isDebugMode(self):
+        return self.systemConfig.get("config")["debug"] == True
+
+    # returns the application config
+    def getAppConfig(self):
+        return self.appConfig
+
+    # returns the system configuration
+    def getSystemConfig(self):
+        return self.systemConfig
